@@ -1,52 +1,34 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from "react-router-dom";
+import './App.css'
+import Prod from './components/Verified'
+import Points from './components/Display'
+import Footer from './components/Bottom'
+import Header from './components/Top'
+import Main from './components/Center'
+import Timeline from './components/Outline'
 import { useState } from "react";
-
 import AuthForm from "./components/AuthForm";
-import Header from "./components/Top";
-import Main from "./components/Center";
-import Timeline from "./components/Outline";
-import Points from "./components/Display";
-import Prod from "./components/Verified";
-import Footer from "./components/Bottom";
-import WalletConnect from "./components/WalletConnect"; // new component
 
 function App() {
-  const [accountId, setAccountId] = useState(null);
-  const [greenPoints, setGreenPoints] = useState(0);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            !isAuthenticated ? (
-              <AuthForm onAuthComplete={() => setIsAuthenticated(true)} />
-            ) : (
-              <LandingPage
-                onWalletConnect={(id) => {
-                  setAccountId(id);
-                  setGreenPoints(2450);
-                }}
-              />
-            )
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <Dashboard accountId={accountId} greenPoints={greenPoints} />
-          }
-        />
-      </Routes>
-    </Router>
+    <>
+      {!isAuthenticated ? (
+        <AuthForm onAuthComplete={() => setIsAuthenticated(true)} />
+      ) : (
+        <div className="overflow-x-hidden">
+          
+      <Header />
+      <Main />
+      <Timeline/>
+      <Points/>
+      <Prod />
+      <Footer/>
+        </div>
+      )}
+    </>
   );
 }
 
-export default App;
+export default App
