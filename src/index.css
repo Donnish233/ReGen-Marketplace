@@ -21,5 +21,11 @@ header, #claim, footer{
 }
 header, footer{ 
   background-color: #F6F8F5;
-  width: 90vw;
+  width: 100%;
+}
+#content{
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }

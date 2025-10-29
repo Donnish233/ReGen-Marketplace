@@ -1,34 +1,22 @@
-import './App.css'
-import Prod from './components/Verified'
-import Points from './components/Display'
-import Footer from './components/Bottom'
-import Header from './components/Top'
-import Main from './components/Center'
-import Timeline from './components/Outline'
 import { useState } from "react";
-import AuthForm from "./components/AuthForm";
+import AuthForm from "./pages/AuthForm";
+import Landing from "./pages/Landing";
+import Dashboard from "./pages/Dashboard";
 
-function App() {
+export default function App() {
+  const [auth, setAuth] = useState(false);
+  const [wallet, setWallet] = useState(null);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const handleAuthSuccess = () => setAuth(true);
+  const handleWalletConnect = (walletInfo) => setWallet(walletInfo);
 
-  return (
-    <>
-      {!isAuthenticated ? (
-        <AuthForm onAuthComplete={() => setIsAuthenticated(true)} />
-      ) : (
-        <div className="overflow-x-hidden">
-          
-      <Header />
-      <Main />
-      <Timeline/>
-      <Points/>
-      <Prod />
-      <Footer/>
-        </div>
-      )}
-    </>
-  );
+  if (!auth) {
+    return <AuthForm onSuccess={handleAuthSuccess} />;
+  }
+
+  if (!wallet) {
+    return <Landing onWalletConnect={handleWalletConnect} />;
+  }
+
+  return <Dashboard wallet={wallet} />;
 }
-
-export default App
