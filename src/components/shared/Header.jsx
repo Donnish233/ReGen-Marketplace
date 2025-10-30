@@ -3,7 +3,6 @@ import { Icon } from "@iconify/react";
 export function Header({ greenPoints = 2450 }) {
   return (
     <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-200 px-4 sm:px-10 py-3">
-      <div className="flex items-center gap-4 flex-wrap">
         {/* Search Bar */}
         <div className="flex-1 min-w-[200px] max-w-lg flex items-center gap-3 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl">
           <Icon
@@ -52,7 +51,6 @@ export function Header({ greenPoints = 2450 }) {
             }}
           />
         </div>
-      </div>
     </header>
   );
 }

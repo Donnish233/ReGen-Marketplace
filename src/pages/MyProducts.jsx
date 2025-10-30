@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { DashboardLayout } from "../components/shared/DashboardLayout";
 
-export default function MyProducts({onNavigate}) {
+export default function MyProducts({ onNavigate }) {
   const [activeFilter, setActiveFilter] = useState("All Products");
 
   const filters = [

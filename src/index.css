@@ -14,7 +14,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-header, #claim, footer{
+header, #claim, #spread, footer{
   display: flex;
   justify-content: space-between;
   align-items: center;

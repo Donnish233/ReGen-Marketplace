@@ -1,3 +1,5 @@
+import { Icon } from "@iconify/react";
+
 export function ImpactWidget({ co2Saved = "12.7 kg", itemsRecycled = 8 }) {
   const stats = [
     { icon: "mdi:cloud-outline", value: co2Saved, label: "CO2 Saved" },

@@ -1,7 +1,6 @@
 import { DashboardLayout } from "../components/shared/DashboardLayout";
-import Footer from "../components/Footer";
 import { Icon } from "@iconify/react";
-import { GreenPointsWidget } from "../components/shared/GreenPointsWidget";
+import { GreenPointsWidget } from "../components/GreenPointsWidget";
 
 // Category Card Component
 function CategoryCard({ title, gradient, imageUrl }) {
@@ -201,52 +200,14 @@ export default function Dashboard({ onNavigate }) {
   ];
 
   return (
-    <DashboardLayout showRightSidebar>
+    <DashboardLayout
+      activePage="Dashboard"
+      showRightSidebar={false}
+      onNavigate={onNavigate}
+    >
       <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 overflow-hidden">
-        <Sidebar onNavigate={onNavigate} />
-
-        <main className="flex-1 lg:ml-0 overflow-y-auto h-screen overflow-x-clip">
-          {/* Header */}
-          <header className="bg-white border-b border-gray-200 sticky top-0 z-10 px-8 py-4">
-            <div className="flex-1 max-w-lg flex items-center gap-3 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl">
-              <Icon
-                icon="mdi:magnify"
-                width="20"
-                height="20"
-                className="text-gray-400"
-              />
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="flex-1 bg-transparent border-none outline-none text-sm text-gray-900"
-              />
-            </div>
-            <div id="content">
-              <div className="flex items-center gap-2 px-4 py-2 bg-green-100 rounded-lg">
-                <Icon
-                  icon="mdi:shield-check"
-                  width="20"
-                  height="20"
-                  className="text-green-500"
-                />
-                <span className="font-bold text-gray-900 text-sm">2,450</span>
-                <span className="text-gray-600 text-sm">GreenPoints</span>
-              </div>
-              <button className="px-5 py-2.5 bg-green-500 text-white rounded-4xl font-semibold text-sm hover:bg-green-600 transition">
-                Connect Wallet
-              </button>
-              <button className="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50 transition">
-                <Icon
-                  icon="mdi:account"
-                  width="20"
-                  height="20"
-                  className="text-gray-600"
-                />
-              </button>
-            </div>
-          </header>
-
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 p-8">
+        <main className="flex-1 lg:ml-0 overflow-y-auto h-screen overflow-x-clip scrollbar-hide">
+          <div className="grid grid-cols-1 gap-6 p-8">
             <div className="space-y-8">
               {/* Featured Categories */}
               <section>
@@ -280,17 +241,12 @@ export default function Dashboard({ onNavigate }) {
                 </div>
               </section>
             </div>
-
-            {/* Right Sidebar */}
-            <aside className="space-y-5">
-              <GreenPointsWidget />
-              <FeedWidget />
-            </aside>
           </div>
-
-          {/* Footer */}
-          <Footer />
         </main>
+        <div className="w-1/3 hidden flex-col gap-6 p-6 lg:flex">
+          <GreenPointsWidget />
+          <FeedWidget />
+        </div>
       </div>
     </DashboardLayout>
   );

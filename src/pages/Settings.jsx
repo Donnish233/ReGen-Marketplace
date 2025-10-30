@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { DashboardLayout } from "../components/shared/DashboardLayout";
 
@@ -10,6 +10,27 @@ export default function Settings({ onNavigate }) {
     newMessages: false,
   });
   const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    // Quick runtime check so you can see in the browser console when this page mounts
+    console.log("Settings mounted", { activeTab, theme });
+  }, []);
+
+  // If the DashboardLayout import failed or exported differently, show a helpful message
+  if (
+    typeof DashboardLayout !== "function" &&
+    typeof DashboardLayout !== "object"
+  ) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-bold text-red-600">Layout import error</h2>
+        <p>
+          DashboardLayout is undefined. Check console and terminal for
+          import/build errors.
+        </p>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: "personal", label: "Personal Information" },

@@ -5,7 +5,6 @@ export function Sidebar({ activePage = "Dashboard", onNavigate }) {
   const navItems = [
     { name: "Dashboard", icon: "mdi:view-dashboard", page: "dashboard" },
     { name: "My Products", icon: "mdi:package-variant", page: "my-products" },
-    { name: "Marketplace", icon: "mdi:storefront", page: "dashboard" },
     { name: "Sell", icon: "mdi:cart", page: "sell" },
     { name: "Recycle", icon: "mdi:recycle", page: "recycle" },
     { name: "Rewards", icon: "mdi:trophy", page: "rewards" },

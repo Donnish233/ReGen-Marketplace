@@ -15,19 +15,24 @@ export function GreenPointsWidget({ points = 2450 }) {
         <div className="text-sm font-semibold text-gray-700 mb-3">
           Your Eco Badges
         </div>
-        <div className="grid grid-cols-4 gap-3">
-          {["♻️", "📦", "⭐", "🔒"].map((emoji, idx) => (
-            <div
-              key={idx}
-              className={`aspect-square rounded-xl flex items-center justify-center text-2xl border-2 transition ${
-                idx === 0 || idx === 2
-                  ? "bg-yellow-100 border-yellow-400"
-                  : "bg-gray-100 border-transparent"
-              }`}
-            >
-              {emoji}
-            </div>
-          ))}
+        <div className="grid grid-cols-4 gap-2 mx-auto">
+          {["♻️", "📦", "⭐", "🔒"].map((emoji, idx) => {
+            const colors = [
+              "bg-green-100",
+              "bg-blue-100",
+              "bg-yellow-100",
+              "bg-gray-200",
+            ];
+            const color = colors[idx];
+            return (
+              <div
+                key={idx}
+                className={`w-10 h-14 rounded-4xl flex items-center justify-center text-2xl ${color} transition`}
+              >
+                {emoji}
+              </div>
+            );
+          })}
         </div>
       </div>
       <button className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition">
