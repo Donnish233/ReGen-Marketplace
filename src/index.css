@@ -14,12 +14,40 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-header, #claim, footer{
+header, #claim, #spread, footer{
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 header, footer{ 
   background-color: #F6F8F5;
-  width: 90vw;
+  width: 100%;
+}
+#content{
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Add scrollbar hiding */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Mobile sidebar toggle (optional enhancement) */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
 }
