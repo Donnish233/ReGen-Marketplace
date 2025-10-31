@@ -1,5 +1,6 @@
+import './App.css'
 import { useState } from "react";
-import AuthForm from "./pages/AuthForm";
+import AuthForm from "./components/AuthForm";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import MyProducts from "./pages/MyProducts";
@@ -8,21 +9,19 @@ import Rewards from "./pages/Rewards";
 import Sell from "./pages/Sell";
 import Settings from "./pages/Settings";
 
-export default function App() {
+function App() {
   const [auth, setAuth] = useState(false);
   const [wallet, setWallet] = useState(null);
   const [currentPage, setCurrentPage] = useState("dashboard");
 
-  const handleAuthSuccess = () => setAuth(true);
-
   const handleWalletConnect = (walletInfo) => {
     setWallet(walletInfo);
-    setCurrentPage("dashboard"); // Start at dashboard after wallet connect
+    setCurrentPage("dashboard");
   };
 
   // If not authenticated, show auth form
   if (!auth) {
-    return <AuthForm onSuccess={handleAuthSuccess} />;
+    return <AuthForm onAuthComplete={() => setAuth(true)} />;
   }
 
   // If authenticated but no wallet, show landing page
@@ -42,3 +41,5 @@ export default function App() {
 
   return pages[currentPage] || pages.dashboard;
 }
+
+export default App

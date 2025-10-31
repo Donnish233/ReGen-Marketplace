@@ -1,14 +1,10 @@
-import { useState } from "react";
 import WalletConnect from "../components/WalletConnect";
 import Footer from "../components/Footer";
 import Centre from "../components/Centre";
 
 function Header({ onWalletConnect }) {
-  const [showWallet, setShowWallet] = useState(false);
-
   const handleWalletConnect = (walletInfo) => {
-    setShowWallet(false);
-    if (onWalletConnect) onWalletConnect(walletInfo); // 🔥 send wallet info upward
+    if (onWalletConnect) onWalletConnect(walletInfo);
   };
 
   return (
@@ -29,16 +25,7 @@ function Header({ onWalletConnect }) {
         </h3>
       </div>
 
-      {!showWallet ? (
-        <button
-          onClick={() => setShowWallet(true)}
-          className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow-md"
-        >
-          Connect Wallet
-        </button>
-      ) : (
-        <WalletConnect onConnect={handleWalletConnect} />
-      )}
+      <WalletConnect onConnect={handleWalletConnect} />
     </header>
   );
 }

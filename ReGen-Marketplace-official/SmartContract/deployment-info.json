@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-10-28T02:35:02.109Z",
+  "network": "hedera_testnet",
+  "deployer": {
+    "accountId": "0.0.7126929",
+    "address": "0x8c360B86499b3546b623C9f3F66574Bfb3EF5aCd"
+  },
+  "contracts": {
+    "accessControl": "0x5e8df4A8869613A89Cd08288a0389012446fBEE5",
+    "productPassport": "0xb6fb89abEAd1dFb8A344e4b905F56afdb93F48f7",
+    "lifecycleEvent": "0x8Fd15D6dd8d2E8Dba3eb595e0871212385A7A036",
+    "greenPoints": "0x2Ed3B5104630685B6a1660E3953C834917271178"
+  }
+}
