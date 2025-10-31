@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AuthForm({ onAuthComplete }) {
+export default function AuthForm({ onSuccess }) {
   const [isLogin, setIsLogin] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -19,7 +19,8 @@ export default function AuthForm({ onAuthComplete }) {
       return;
     }
     console.log("Auth success:", formData);
-    onAuthComplete?.(formData);
+    // 👇 Trigger success callback when form is valid
+    onSuccess?.(formData);
   };
 
   return (
