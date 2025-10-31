@@ -1,0 +1,14 @@
+{
+  "extends": "solhint:recommended",
+  "rules": {
+    "compiler-version": ["error", "^0.8.0"],
+    "func-name-mixedcase": "error",
+    "const-name-snakecase": "warn",
+    "contract-name-camelcase": "warn",
+    "no-console": "off",
+    "no-unused-vars": "warn",
+    "private-vars-leading-underscore": "warn",
+    "not-rely-on-time": "warn"
+  }
+}
+
