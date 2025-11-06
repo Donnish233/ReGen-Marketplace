@@ -1,5 +1,6 @@
 import './App.css'
 import { useState } from "react";
+import { WalletProvider } from "./context/WalletContext";
 import AuthForm from "./components/AuthForm";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
@@ -9,7 +10,7 @@ import Rewards from "./pages/Rewards";
 import Sell from "./pages/Sell";
 import Settings from "./pages/Settings";
 
-function App() {
+function AppContent() {
   const [auth, setAuth] = useState(false);
   const [wallet, setWallet] = useState(null);
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -40,6 +41,14 @@ function App() {
   };
 
   return pages[currentPage] || pages.dashboard;
+}
+
+function App() {
+  return (
+    <WalletProvider>
+      <AppContent />
+    </WalletProvider>
+  );
 }
 
 export default App
