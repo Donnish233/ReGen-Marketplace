@@ -26,96 +26,115 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
 
-  // Initialize wallet on component mount
+  // Initialize wallet on component mount - only once
   useEffect(() => {
-    const initializeWallet = async () => {
+    console.log("WalletConnect component mounted");
+
+    const checkAndRestoreWallet = async () => {
       try {
-        // Check if MetaMask is installed
-        if (typeof window.ethereum !== "undefined") {
-          // Create provider instance
-          const ethProvider = new BrowserProvider(window.ethereum);
-          setProvider(ethProvider);
+        if (typeof window.ethereum === "undefined") {
+          console.log("MetaMask not detected");
+          return;
+        }
 
-          // Check if already connected
-          const accounts = (await window.ethereum!.request({
-            method: "eth_accounts",
-          })) as string[];
+        console.log("MetaMask detected");
+        const ethProvider = new BrowserProvider(window.ethereum);
+        setProvider(ethProvider);
 
-          if (accounts && accounts.length > 0) {
-            const chainId = (await window.ethereum!.request({
-              method: "eth_chainId",
-            })) as string;
-            const network = await ethProvider.getNetwork();
+        // Check if already connected
+        const accounts = (await window.ethereum!.request({
+          method: "eth_accounts",
+        })) as string[];
 
-            setWalletInfo({
-              address: accounts[0],
-              isConnected: true,
-              balance: null,
-              chainId: Number(chainId),
-            });
+        console.log("Accounts:", accounts);
 
-            // Check network
-            if (Number(chainId) !== HEDERA_TESTNET_CHAIN_ID) {
-              setErrorMessage(
-                `⚠️ Please switch to Hedera Testnet (Chain ID: ${HEDERA_TESTNET_CHAIN_ID})`
-              );
-            } else {
-              setErrorMessage(null);
-            }
+        if (accounts && accounts.length > 0) {
+          const chainId = (await window.ethereum!.request({
+            method: "eth_chainId",
+          })) as string;
 
-            if (onConnect) {
-              onConnect(accounts[0], ethProvider);
-            }
+          setWalletInfo({
+            address: accounts[0],
+            isConnected: true,
+            balance: null,
+            chainId: Number(chainId),
+          });
+
+          if (onConnect) {
+            onConnect(accounts[0], ethProvider);
           }
 
-          // Listen for account changes
-          window.ethereum!.on("accountsChanged", (newAccounts: string[]) => {
-            if (newAccounts.length === 0) {
-              setWalletInfo({
-                address: null,
-                isConnected: false,
-                balance: null,
-                chainId: null,
-              });
-              setErrorMessage(null);
-            } else {
-              setWalletInfo((prev) => ({
-                ...prev,
-                address: newAccounts[0],
-              }));
-              if (onConnect) {
-                onConnect(newAccounts[0], provider);
-              }
-            }
-          });
+          if (Number(chainId) !== HEDERA_TESTNET_CHAIN_ID) {
+            setErrorMessage(
+              `⚠️ Please switch to Hedera Testnet (Chain ID: ${HEDERA_TESTNET_CHAIN_ID})`
+            );
+          }
+        }
 
-          // Listen for chain changes
-          window.ethereum!.on("chainChanged", (chainId: string) => {
-            const newChainId = Number(chainId);
+        // Set up event listeners
+        const handleAccountsChanged = (newAccounts: string[]) => {
+          console.log("Accounts changed:", newAccounts);
+          if (newAccounts.length === 0) {
+            setWalletInfo({
+              address: null,
+              isConnected: false,
+              balance: null,
+              chainId: null,
+            });
+            setErrorMessage(null);
+          } else {
             setWalletInfo((prev) => ({
               ...prev,
-              chainId: newChainId,
+              address: newAccounts[0],
             }));
-
-            if (newChainId !== HEDERA_TESTNET_CHAIN_ID) {
-              setErrorMessage(
-                `⚠️ Please switch to Hedera Testnet (Chain ID: ${HEDERA_TESTNET_CHAIN_ID})`
-              );
-            } else {
-              setErrorMessage(null);
+            if (onConnect) {
+              onConnect(newAccounts[0], ethProvider);
             }
-          });
-        }
+          }
+        };
+
+        const handleChainChanged = (chainId: string) => {
+          console.log("Chain changed:", chainId);
+          const newChainId = Number(chainId);
+          setWalletInfo((prev) => ({
+            ...prev,
+            chainId: newChainId,
+          }));
+
+          if (newChainId !== HEDERA_TESTNET_CHAIN_ID) {
+            setErrorMessage(
+              `⚠️ Please switch to Hedera Testnet (Chain ID: ${HEDERA_TESTNET_CHAIN_ID})`
+            );
+          } else {
+            setErrorMessage(null);
+          }
+        };
+
+        window.ethereum!.on("accountsChanged", handleAccountsChanged);
+        window.ethereum!.on("chainChanged", handleChainChanged);
+
+        // Cleanup listeners on unmount
+        return () => {
+          if (window.ethereum) {
+            window.ethereum!.removeListener("accountsChanged", handleAccountsChanged);
+            window.ethereum!.removeListener("chainChanged", handleChainChanged);
+          }
+        };
       } catch (error) {
         console.error("Wallet initialization error:", error);
+        setErrorMessage(`Init error: ${error}`);
       }
     };
 
-    initializeWallet();
-  }, [onConnect]);
+    checkAndRestoreWallet();
+  }, []);
 
   const connectWallet = async () => {
+    console.log("Connect wallet clicked");
+    console.log("window.ethereum:", typeof window.ethereum);
+
     if (typeof window.ethereum === "undefined") {
+      console.error("MetaMask not found");
       setErrorMessage(
         "MetaMask not installed. Please install MetaMask extension."
       );
@@ -127,10 +146,12 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
     setErrorMessage(null);
 
     try {
+      console.log("Requesting accounts...");
       // Request account access
       const accounts = (await window.ethereum!.request({
         method: "eth_requestAccounts",
       })) as string[];
+      console.log("Accounts received:", accounts);
 
       if (accounts && accounts.length > 0) {
         const ethProvider = new BrowserProvider(window.ethereum!);
@@ -161,6 +182,10 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
         localStorage.setItem("hedera_account", accounts[0]);
       }
     } catch (error: any) {
+      console.error("Wallet connection error:", error);
+      console.error("Error code:", error?.code);
+      console.error("Error message:", error?.message);
+
       if (error.code === 4001) {
         setErrorMessage("User rejected the request to connect wallet.");
       } else {
@@ -168,7 +193,6 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
           error.message || "Failed to connect wallet. Please try again."
         );
       }
-      console.error("Wallet connection error:", error);
     } finally {
       setConnecting(false);
     }
@@ -237,6 +261,12 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
 
   return (
     <div className="flex flex-col gap-2">
+      {/* Debug info - remove in production */}
+      {!walletInfo.isConnected && (
+        <div className="text-xs text-gray-500">
+          {typeof window.ethereum !== "undefined" ? "✓ MetaMask detected" : "✗ MetaMask not detected"}
+        </div>
+      )}
       {errorMessage && (
         <div className="bg-yellow-100 text-yellow-800 px-3 py-2 rounded-lg text-xs font-semibold">
           {errorMessage}
