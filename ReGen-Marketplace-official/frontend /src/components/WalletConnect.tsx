@@ -131,7 +131,6 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
 
   const connectWallet = async () => {
     console.log("Connect wallet clicked");
-    console.log("window.ethereum:", typeof window.ethereum);
 
     if (typeof window.ethereum === "undefined") {
       console.error("MetaMask not found");
@@ -146,48 +145,71 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
     setErrorMessage(null);
 
     try {
-      console.log("Requesting accounts...");
-      // Request account access
-      const accounts = (await window.ethereum!.request({
+      console.log("Requesting accounts from MetaMask...");
+
+      // Create a timeout promise
+      const accountsPromise = window.ethereum!.request({
         method: "eth_requestAccounts",
-      })) as string[];
-      console.log("Accounts received:", accounts);
+      }) as Promise<string[]>;
 
-      if (accounts && accounts.length > 0) {
-        const ethProvider = new BrowserProvider(window.ethereum!);
-        const chainId = (await window.ethereum!.request({
-          method: "eth_chainId",
-        })) as string;
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("MetaMask request timeout after 30s")), 30000)
+      );
 
-        setProvider(ethProvider);
-        setWalletInfo({
-          address: accounts[0],
-          isConnected: true,
-          balance: null,
-          chainId: Number(chainId),
-        });
+      const accounts = await Promise.race([accountsPromise, timeoutPromise]);
+      console.log("✓ Accounts received:", accounts);
 
-        // Check if connected to correct network
-        if (Number(chainId) !== HEDERA_TESTNET_CHAIN_ID) {
-          await switchToHederaTestnet();
-        } else {
-          setErrorMessage(null);
-        }
-
-        if (onConnect) {
-          onConnect(accounts[0], ethProvider);
-        }
-
-        // Store in localStorage for persistence
-        localStorage.setItem("hedera_account", accounts[0]);
+      if (!accounts || accounts.length === 0) {
+        throw new Error("No accounts returned from MetaMask");
       }
+
+      console.log("Creating provider...");
+      const ethProvider = new BrowserProvider(window.ethereum!);
+
+      console.log("Requesting chain ID...");
+      const chainId = (await window.ethereum!.request({
+        method: "eth_chainId",
+      })) as string;
+      console.log("✓ Chain ID:", chainId);
+
+      setProvider(ethProvider);
+      setWalletInfo({
+        address: accounts[0],
+        isConnected: true,
+        balance: null,
+        chainId: Number(chainId),
+      });
+
+      console.log("✓ Wallet connected:", accounts[0]);
+
+      // Check if connected to correct network
+      if (Number(chainId) !== HEDERA_TESTNET_CHAIN_ID) {
+        console.log("Wrong network, switching to Hedera Testnet...");
+        await switchToHederaTestnet();
+      } else {
+        console.log("✓ Already on Hedera Testnet");
+        setErrorMessage(null);
+      }
+
+      if (onConnect) {
+        console.log("Calling onConnect callback...");
+        onConnect(accounts[0], ethProvider);
+      }
+
+      // Store in localStorage for persistence
+      localStorage.setItem("hedera_account", accounts[0]);
+      console.log("✓ Account saved to localStorage");
+
     } catch (error: any) {
-      console.error("Wallet connection error:", error);
+      console.error("❌ Wallet connection error:", error);
       console.error("Error code:", error?.code);
       console.error("Error message:", error?.message);
+      console.error("Full error:", error);
 
       if (error.code === 4001) {
         setErrorMessage("User rejected the request to connect wallet.");
+      } else if (error.message?.includes("timeout")) {
+        setErrorMessage("MetaMask request timed out. Please try again.");
       } else {
         setErrorMessage(
           error.message || "Failed to connect wallet. Please try again."
