@@ -3,8 +3,8 @@ import Footer from "../components/Footer";
 import Centre from "../components/Centre";
 
 function Header({ onWalletConnect }) {
-  const handleWalletConnect = (walletInfo) => {
-    if (onWalletConnect) onWalletConnect(walletInfo);
+  const handleWalletConnect = (accountId) => {
+    if (onWalletConnect) onWalletConnect(accountId);
   };
 
   return (
