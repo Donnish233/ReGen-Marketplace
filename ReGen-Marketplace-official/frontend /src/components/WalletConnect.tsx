@@ -145,17 +145,28 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
     setErrorMessage(null);
 
     try {
-      console.log("Requesting accounts from MetaMask...");
+      console.log("Checking MetaMask is ready...");
 
-      // Create a timeout promise
+      // Ensure MetaMask is available and ready
+      if (!window.ethereum) {
+        throw new Error("window.ethereum is not available");
+      }
+
+      console.log("MetaMask is available, requesting accounts...");
+
+      // Create a timeout promise - 10 seconds instead of 30
       const accountsPromise = window.ethereum!.request({
         method: "eth_requestAccounts",
       }) as Promise<string[]>;
 
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("MetaMask request timeout after 30s")), 30000)
+        setTimeout(() => {
+          console.error("MetaMask popup timeout - is the popup blocked?");
+          reject(new Error("MetaMask request timeout after 10s. Check if popup is blocked."));
+        }, 10000)
       );
 
+      console.log("Waiting for MetaMask popup response...");
       const accounts = await Promise.race([accountsPromise, timeoutPromise]);
       console.log("✓ Accounts received:", accounts);
 
