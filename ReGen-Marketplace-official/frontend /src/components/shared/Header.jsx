@@ -32,9 +32,6 @@ export function Header({ greenPoints = 2450 }) {
             </span>
             <span className="text-gray-600 text-sm hidden md:inline">GP</span>
           </div>
-          <button className="px-4 sm:px-5 py-2.5 bg-green-500 text-white rounded-lg font-semibold text-sm hover:bg-green-600 transition whitespace-nowrap">
-            Connect Wallet
-          </button>
           <button className="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-gray-50 transition">
             <Icon
               icon="mdi:bell"
