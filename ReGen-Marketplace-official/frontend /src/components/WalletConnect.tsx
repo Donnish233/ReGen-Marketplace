@@ -152,20 +152,7 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
         throw new Error("window.ethereum is not available");
       }
 
-      console.log("MetaMask is available, verifying responsiveness...");
-
-      // First, verify MetaMask is responsive with a non-popup request
-      try {
-        const existingAccounts = (await window.ethereum!.request({
-          method: "eth_accounts",
-        })) as string[];
-        console.log("✓ MetaMask is responsive. Existing accounts:", existingAccounts);
-      } catch (checkError) {
-        console.error("MetaMask not responding to eth_accounts:", checkError);
-        throw new Error("MetaMask extension is not responding properly. Please ensure it's unlocked and enabled.");
-      }
-
-      console.log("MetaMask is responsive, requesting account connection...");
+      console.log("MetaMask is available, requesting account connection...");
 
       // Request accounts with extended timeout (30 seconds)
       // MetaMask extension can be slow sometimes
@@ -181,9 +168,10 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
           console.error("MetaMask popup timeout after 30s");
           console.warn("⚠️ Possible causes:");
           console.warn("  1. Browser popup blocker is blocking the MetaMask popup");
-          console.warn("  2. MetaMask extension needs to be unlocked");
-          console.warn("  3. The site might need to be manually approved in MetaMask");
-          reject(new Error("MetaMask connection timeout. Please check your browser popup settings and MetaMask extension."));
+          console.warn("  2. MetaMask extension needs to be unlocked or locked");
+          console.warn("  3. Try restarting the MetaMask extension");
+          console.warn("  4. Try refreshing the page");
+          reject(new Error("MetaMask connection timeout. Please check MetaMask extension status and try again."));
         }, 30000)
       );
 
