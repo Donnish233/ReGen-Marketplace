@@ -24,7 +24,6 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
     chainId: null,
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [provider, setProvider] = useState<BrowserProvider | null>(null);
 
   // Initialize wallet on component mount - only once
   useEffect(() => {
@@ -39,7 +38,6 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
 
         console.log("MetaMask detected");
         const ethProvider = new BrowserProvider(window.ethereum);
-        setProvider(ethProvider);
 
         // Check if already connected
         const accounts = (await window.ethereum!.request({
@@ -192,7 +190,6 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
       })) as string;
       console.log("✓ Chain ID:", chainId);
 
-      setProvider(ethProvider);
       setWalletInfo({
         address: accounts[0],
         isConnected: true,
@@ -291,7 +288,6 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
         balance: null,
         chainId: null,
       });
-      setProvider(null);
       setErrorMessage(null);
       localStorage.removeItem("hedera_account");
     } catch (error) {

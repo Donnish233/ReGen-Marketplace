@@ -5,13 +5,6 @@ import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from "../config/contracts";
  * Hedera Token Service utilities for signing and verifying token operations
  */
 
-interface SignatureData {
-  message: string;
-  signature: string;
-  signer: string;
-  timestamp: number;
-}
-
 interface TokenSigningResult {
   success: boolean;
   signature?: string;
@@ -84,7 +77,6 @@ export async function createTokenTransferSignature(
  * Get the GREEN_POINTS token contract instance
  */
 export function getGreenPointsContract(
-  provider: BrowserProvider,
   signer: any
 ): Contract | null {
   try {
@@ -118,10 +110,7 @@ export async function issueGreenPoints(
   error?: string;
 }> {
   try {
-    const contract = getGreenPointsContract(
-      new BrowserProvider(window.ethereum!),
-      signer
-    );
+    const contract = getGreenPointsContract(signer);
     if (!contract) {
       return {
         success: false,
@@ -176,7 +165,7 @@ export async function getGreenPointsBalance(
   error?: string;
 }> {
   try {
-    const contract = getGreenPointsContract(provider, provider);
+    const contract = getGreenPointsContract(provider);
     if (!contract) {
       return {
         success: false,
@@ -203,7 +192,7 @@ export async function getGreenPointsBalance(
  * Verify a signed message (utility function)
  */
 export function verifySignature(
-  message: string,
+  _message: string,
   signature: string,
   signerAddress: string
 ): boolean {
