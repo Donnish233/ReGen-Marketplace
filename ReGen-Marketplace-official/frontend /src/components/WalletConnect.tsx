@@ -305,12 +305,6 @@ export default function WalletConnect({ onConnect }: WalletConnectProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Debug info - remove in production */}
-      {!walletInfo.isConnected && (
-        <div className="text-xs text-gray-500">
-          {typeof window.ethereum !== "undefined" ? "✓ MetaMask detected" : "✗ MetaMask not detected"}
-        </div>
-      )}
       {errorMessage && (
         <div className="bg-yellow-100 text-yellow-800 px-3 py-2 rounded-lg text-xs font-semibold">
           {errorMessage}
